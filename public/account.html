@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AngelBite — аккаунт и новости</title>
+<style>
+:root{--bg:#030612;--card:rgba(255,255,255,.04);--line:rgba(108,155,255,.22);--a:#5ca8ff;--b:#a36bff;--txt:#f3e9ea;--mut:#a5a8c0;--err:#ff6a7a;--ok:#6fe3a0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,sans-serif;min-height:100vh}
+.wrap{max-width:860px;margin:0 auto;padding:24px 18px 80px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+h1{margin:0;font-size:26px}a{color:var(--a)}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.btn{padding:10px 18px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font:inherit;font-weight:700;cursor:pointer}
+.btn.on,.btn.p{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent;color:#05070f}
+.btn.sm{padding:6px 12px;font-size:13px}.btn.d{color:var(--err)}
+.card{padding:22px;border-radius:18px;background:var(--card);border:1px solid var(--line);margin-bottom:16px}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
+input,textarea,select{width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--txt);font:inherit}
+textarea{min-height:90px;resize:vertical}
+.msg{min-height:22px;margin-top:10px;font-size:14px}.msg.e{color:var(--err)}.msg.o{color:var(--ok)}
+.bal{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0}
+.bal div{flex:1;min-width:150px;padding:16px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.25)}
+.bal b{display:block;font-size:28px}.mut{color:var(--mut);font-size:13px}
+.post .body{white-space:pre-wrap;word-break:break-word}
+.opt{position:relative;display:flex;justify-content:space-between;gap:10px;padding:10px 14px;margin-top:8px;border-radius:10px;border:1px solid var(--line);cursor:pointer;overflow:hidden;background:rgba(0,0,0,.25)}
+.opt i{position:absolute;left:0;top:0;bottom:0;background:rgba(92,168,255,.22);z-index:0}
+.opt span{position:relative;z-index:1}.opt.me{border-color:var(--a)}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+.pv{display:inline-flex;gap:6px;align-items:center;margin:2px 6px 2px 0;padding:3px 10px;border-radius:99px;border:1px solid var(--line);font-size:13px}
+.hide{display:none}
+.av{border-radius:50%;object-fit:cover;background:rgba(255,255,255,.08);display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;flex:none;font-size:.5em}
+.nm{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+.nick-sticker{width:22px;height:22px;object-fit:contain;vertical-align:middle;filter:drop-shadow(0 2px 5px #0008)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.sw{display:inline-block;width:38px;height:38px;border-radius:10px;border:2px solid var(--line);cursor:pointer;margin:4px;position:relative}
+.sw.own{border-color:#fff}.sw.on{outline:3px solid var(--a)}
+.bg{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;font-size:22px;border-radius:10px;border:2px solid var(--line);cursor:pointer;margin:4px;background:rgba(0,0,0,.3)}
+.bg.own{border-color:#fff}.bg.on{outline:3px solid var(--a)}
+.chat{display:grid;grid-template-columns:240px 1fr;gap:14px}@media(max-width:700px){.chat{grid-template-columns:1fr}}
+.cl{display:flex;align-items:center;gap:8px;padding:9px;border-radius:10px;cursor:pointer;border:1px solid transparent}.cl:hover,.cl.on{border-color:var(--line);background:rgba(255,255,255,.04)}
+.un{margin-left:auto;background:var(--a);color:#05070f;border-radius:99px;font-size:12px;font-weight:800;padding:1px 8px}
+.th{height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.25)}
+.mg{max-width:78%;padding:8px 12px;border-radius:14px;background:rgba(255,255,255,.07);word-break:break-word;white-space:pre-wrap}
+.mg.me{align-self:flex-end;background:rgba(92,168,255,.25)}.mg img{max-width:100%;max-height:260px;border-radius:10px;display:block;margin-top:6px}
+.mg small{display:block;color:var(--mut);font-size:11px;margin-top:3px}
+.dot{display:inline-block;min-width:18px;padding:0 5px;border-radius:99px;background:var(--err);color:#fff;font-size:12px;margin-left:6px}
+/* AngelBite: интерфейс как блокнот игрового сообщества, без стеклянных карточек и неоновых свечений. */
+:root{--bg:#080708;--card:#151214;--line:#54202a;--a:#ff304d;--b:#ff7755;--txt:#f7f3f4;--mut:#b6aeb0;--err:#ff6d78;--ok:#a5d69a}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);background-image:linear-gradient(90deg,transparent 0 49.9%,rgba(238,233,219,.018) 50%,transparent 50.1%);background-size:32px 32px}
+.wrap{max-width:1060px;padding-top:30px}
+header{padding:14px 0 20px;border-bottom:1px solid var(--line)}
+h1{font-size:22px;letter-spacing:.01em}a{color:var(--a)}
+.tabs{gap:6px;padding:12px 0 8px;border-bottom:1px solid var(--line)}
+.btn{border-radius:7px;border-color:var(--line);background:#20251f;color:var(--txt);transition:background .15s,border-color .15s}
+.btn:hover{background:#2a3028;border-color:#777e61}
+.btn.on,.btn.p{background:#596747;border-color:#71825a;color:#fff7e8}
+.card{border-radius:10px;background:var(--card);border-color:var(--line);box-shadow:0 3px 0 rgba(0,0,0,.18);padding:24px}
+input,textarea,select{border-radius:7px;background:#121612;border-color:#454c41}
+.bal div{border-radius:8px;background:#171b17;border-color:var(--line)}
+.grid3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:start}
+.plan-card{display:flex;flex-direction:column;min-height:100%;border-top:3px solid var(--plan,#8d9b6e)}
+.plan-card.prime{--plan:#c8945f}.plan-card.eclipse{--plan:#9a8bb0}
+.plan-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:12px}
+.plan-head h3{font-size:21px;letter-spacing:.07em;margin:0}
+.plan-mark{font-size:20px;color:var(--plan)}
+.plan-price{color:var(--mut);font-size:13px}
+.plan-inherit{margin:0 0 14px;padding:9px 11px;border-left:2px solid var(--plan);background:#171b17;color:var(--mut);font-size:13px}
+.perk-group{padding:12px 0;border-top:1px solid rgba(170,169,155,.15)}
+.perk-group h4{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--plan);margin:0 0 7px}
+.perk-group ul{margin:0;padding-left:18px;color:var(--txt);font-size:14px}
+.perk-group li+li{margin-top:5px}.perk-kit{color:#d8d2c1}
+.price-note{margin-top:auto;padding:12px 0 0;color:var(--mut);font-size:13px}
+.daily-card{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;border-left:3px solid #c8945f}
+.daily-card h2{margin:0 0 5px}.daily-count{font-size:14px;color:var(--mut)}
+.daily-reward{white-space:nowrap;font-weight:750;color:#e7c77d}
+.daily-card .daily-action{grid-column:1/-1}
+.daily-stamp{display:inline-block;padding:3px 8px;border:1px solid var(--line);border-radius:4px;color:var(--a);font-size:12px;letter-spacing:.04em}
+.sticker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:12px}.sticker-tile{padding:8px;border:1px solid var(--line);border-radius:8px;text-align:center;background:#171b17}.sticker-tile img{width:100%;height:100px;object-fit:contain}.price-table{max-width:340px}.sticker-picker{display:flex;gap:8px;overflow:auto;padding:8px 0}.sticker-picker img{width:64px;height:64px;object-fit:contain;cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:4px}
+@media(max-width:560px){.wrap{padding:14px 12px 50px}.card{padding:18px}.daily-card{grid-template-columns:1fr}.daily-card .daily-action{grid-column:auto}.plan-head{align-items:flex-start;flex-direction:column;gap:4px}}
+@media(max-width:700px){
+  body{overflow-x:hidden}
+  .wrap{width:100%;min-width:0;padding:12px 12px calc(32px + env(safe-area-inset-bottom))}
+  header{align-items:flex-start;margin-bottom:10px}header h1{font-size:20px}
+  .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:10px 0;margin-bottom:12px}
+  .tabs .btn{min-width:0;padding:9px 5px;font-size:12px;line-height:1.25;overflow-wrap:anywhere}
+  .tabs .dot{min-width:15px;padding:0 4px;font-size:10px}
+  .card{padding:16px;margin-bottom:12px;min-width:0}
+  .grid3{grid-template-columns:minmax(0,1fr);gap:8px}
+  .plan-card{min-height:0}.plan-head{gap:8px}.price-table{width:min(100%,340px)}
+  .row{gap:7px}.row>*{min-width:0}
+  input,textarea,select{font-size:16px;min-width:0}
+  .chat{grid-template-columns:minmax(0,1fr);min-width:0}.chat>*{min-width:0}
+  .chat.mobile-open>.card:first-child{display:none}.chat:not(.mobile-open)>.card:last-child{display:none}
+  .chat .row>*{min-width:0}.chat .row{flex-wrap:wrap}
+  .th{height:min(52vh,420px);min-height:220px}
+  .mg{max-width:88%}.mg img{max-height:220px}
+  .mobile-back{display:inline-flex!important;min-width:40px;justify-content:center}
+  table:not(.price-table){display:block;max-width:100%;overflow-x:auto;white-space:nowrap}
+  .sticker-grid{grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:7px}
+  .sticker-tile img{height:84px}
+}
+@media(max-width:380px){.wrap{padding-inline:9px}.tabs{gap:4px}.tabs .btn{font-size:11px;padding:8px 3px}.card{padding:14px}.plan-head h3{font-size:19px}}
+.admin-gallery-list{display:grid;gap:10px;margin-top:14px}.admin-gallery-row{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px}.admin-gallery-row img{width:96px;height:64px;object-fit:cover;border-radius:7px}.admin-gallery-row .mut{overflow-wrap:anywhere}
+@media(max-width:480px){.admin-gallery-row{grid-template-columns:72px minmax(0,1fr);gap:8px}.admin-gallery-row img{width:72px;height:56px}.admin-gallery-row .btn{grid-column:1/-1;justify-self:end}}
+:focus-visible{outline:3px solid #fff;outline-offset:3px}
+/* AngelBite red, black and white space theme; compact touch layout. */
+:root{--bg:#080708;--card:#151214;--line:#54202a;--a:#ff304d;--b:#ff7755;--txt:#f7f3f4;--mut:#b6aeb0;--err:#ff6d78;--ok:#a5d69a}
+body{background:radial-gradient(ellipse at 50% -20%,#351018 0,transparent 55%),var(--bg)}
+.card{box-shadow:0 10px 32px #0005,0 0 0 1px #ff304d08 inset;transition:transform .2s,border-color .2s,box-shadow .2s}
+.card:hover{border-color:#a72c41;box-shadow:0 14px 36px #0007,0 0 24px #ff304d12}
+.btn.on,.btn.p{background:linear-gradient(135deg,#d7193f,#ff465b 58%,#fff);color:#10090b;border-color:transparent}
+.tabs .btn{transition:transform .18s,background .18s,border-color .18s}.tabs .btn:active,.btn:active{transform:scale(.97)}
+.daily-stamp{color:#ff7185;border-color:#76303c}
+@media(max-width:700px){.tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;overscroll-behavior-x:contain}.tabs .btn{flex:0 0 auto;min-height:42px;white-space:nowrap}.wrap{max-width:100%;overflow-x:clip}.card{min-width:0}.grid3{grid-template-columns:minmax(0,1fr)}.plan-price{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style></head><body><div class="wrap">
+<header><h1>👼 AngelBite</h1><a href="index.html">← На главную</a></header>
+<div class="tabs" id="tabs"></div>
+<div id="view"></div>
+</div>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const el=(t,p={},...k)=>{const e=document.createElement(t);for(const[a,v]of Object.entries(p)){if(a==='class')e.className=v;else if(a.startsWith('on'))e[a]=v;else e.setAttribute(a,v)}k.flat().forEach(c=>e.append(c));return e};
+async function api(path,method='GET',body){
+  const r=await fetch('/api/'+path,{method,headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,credentials:'same-origin'});
+  let d={};try{d=await r.json()}catch{}
+  if(!r.ok)throw new Error(d.error||'Ошибка');return d}
+const fmt=t=>new Date(t).toLocaleDateString('ru-RU');
+let me=null,tab='news',cfg=null,unread=0,timer=null;
+const imgUrl=id=>'/api/img?id='+id;
+function avatarEl(id,size,name){
+  if(id)return el('img',{class:'av',src:imgUrl(id),width:size,height:size,style:`width:${size}px;height:${size}px`,alt:''});
+  const d=el('span',{class:'av',style:`width:${size}px;height:${size}px;font-size:${Math.round(size*.5)}px`},(name||'?')[0].toUpperCase());return d}
+function nameEl(u,size=0){
+  const s=el('span',{class:'nm'});
+  if(size)s.append(avatarEl(u.avatar,size,u.username));
+  if(u.badge){if(String(u.badge).startsWith('sticker:'))s.append(el('img',{class:'nick-sticker',src:imgUrl(String(u.badge).slice(8)),alt:'Стикер ника',loading:'lazy'}));else s.append(el('span',{},u.badge))}
+  const n=el('span',{},u.username);if(u.color)n.style.color=u.color;s.append(n);return s}
+async function init(){
+  try{cfg=await api('config')}catch{cfg={donates:{},colors:[],badges:[],price:{},reward:{}}}
+  try{me=(await api('me')).user}catch{me=null}
+  drawTabs();draw();pollUnread()}
+async function pollUnread(){
+  clearInterval(timer);if(!me)return;
+  const f=async()=>{try{const d=await api('dm/list');unread=d.chats.reduce((s,c)=>s+(c.unread||0),0);const b=$('#dmdot');if(b){b.textContent=unread||'';b.style.display=unread?'':'none'}}catch{}};
+  f();timer=setInterval(f,20000)}
+function drawTabs(){
+  const t=$('#tabs');t.replaceChildren();
+  const add=(id,n,dot)=>{const b=el('button',{class:'btn'+(tab===id?' on':''),onclick:()=>{tab=id;drawTabs();draw()}},n);if(dot)b.append(el('span',{class:'dot',id:'dmdot',style:unread?'':'display:none'},unread||''));t.append(b)};
+  add('news','Новости');add('donate','Привилегии');add('shop','Магазин');
+  if(me)add('daily','Сундук дня');
+  if(me)add('dm','✉️ Сообщения',true);
+  if(me)add('stickers','🧩 Стикеры');
+  add('acc',me?'👤 Профиль':'🔑 Вход / регистрация');if(me&&me.admin)add('adm','🛠 Админ');
+  if(me)t.append(el('button',{class:'btn d',onclick:async()=>{await api('logout','POST',{});me=null;tab='news';clearInterval(timer);drawTabs();draw()}},'Выйти'))}
+function draw(){const v=$('#view');v.replaceChildren();({news:drawNews,donate:drawDonate,shop:drawShop,daily:drawDaily,dm:drawDm,stickers:drawStickers,acc:drawAcc,adm:drawAdmin}[tab])(v)}
+async function refreshMe(){me=(await api('me')).user;drawTabs()}
+
+async function drawNews(v){
+  v.append(el('div',{class:'mut'},'Загрузка…'));
+  let d;try{d=await api('news')}catch(e){v.replaceChildren(el('div',{class:'msg e'},e.message));return}
+  v.replaceChildren();
+  if(me&&!me.admin)v.append(el('div',{class:'card mut'},`За каждое голосование в опросе ты получаешь ${cfg.reward.vote||0} 💎.`));
+  if(!d.posts.length)v.append(el('div',{class:'card mut'},'Пока новостей нет.'));
+  for(const p of d.posts){
+    const c=el('div',{class:'card post'},el('div',{class:'mut'},fmt(p.created)),el('div',{class:'body'},p.body));
+    if(p.options.length){
+      const total=p.options.reduce((s,o)=>s+o.votes,0);
+      for(const o of p.options){
+        const pct=total?Math.round(o.votes*100/total):0;
+        c.append(el('div',{class:'opt'+(p.myVote===o.id?' me':''),onclick:async()=>{
+          if(!me){alert('Войди в аккаунт, чтобы голосовать');return}
+          if(p.myVote!=null)return;
+          try{const r=await api('vote','POST',{post:p.id,option:o.id});if(r.reward)alert('+'+r.reward+' 💎 за участие в голосовании!');await refreshMe();draw()}catch(e){alert(e.message)}}},
+          el('i',{style:`width:${pct}%`}),el('span',{},o.text),el('span',{},`${o.votes} • ${pct}%`)));
+      }
+      c.append(el('div',{class:'mut',style:'margin-top:8px'},me?(p.myVote!=null?'Ты проголосовал(а). Всего голосов: '+total:'Выбери вариант. Всего голосов: '+total):'Голосовать могут только вошедшие. Всего голосов: '+total));
+    }
+    if(me&&me.admin)c.append(el('button',{class:'btn sm d',style:'margin-top:10px',onclick:async()=>{if(confirm('Удалить новость?')){await api('news','DELETE',{id:p.id});draw()}}},'Удалить'));
+    v.append(c)}}
+
+const DONATE_DETAILS={
+  plus:{mark:'✦',inherit:'Всё из Standard',groups:[
+    ['Экономика и места',['Продажа серверу ×1.5','Ежедневная выплата: 100–150 ₿','6 домов · 50 приватов','2 бизнеса · 2 банка','15 лотов на аукцион']],
+    ['Удобство',['Без нормы сообщений','Почта: 75 писем / 30 посылок','Избранное: 60','Сохранённые варпы: 8','Команды: /craft, /hat']],
+    ['Косметика',['8 аксессуаров · 1117 предметов мебели','Следы: Cloud, Happy, Crit','Цвет ника: красный, золотой, голубой','Цвет сообщений: белый, серый, жёлтый','2 варианта сообщения входа/выхода']],
+    ['Старт-кит · 1 раз за вайп',['Железные меч, кирка, топор и лопата; щит','24 жареной говядины · 32 факела · 16 дубовых брёвен']]]},
+  prime:{mark:'◈',inherit:'Всё из PLUS, с увеличенными лимитами',groups:[
+    ['Экономика и места',['Продажа серверу ×2.5','Ежедневная выплата: 150–200 ₿','10 домов · 75 приватов','3 бизнеса · 3 банка','20 лотов на аукцион']],
+    ['Удобство',['Почта: 110 писем / 45 посылок','Избранное: 90','Сохранённые варпы: 16']],
+    ['Косметика',['12 аксессуаров · 1451 предмет мебели','Дополнительные следы: Heart, Enchant, End Rod','Дополнительные цвета ника: розовый, зелёный, жёлтый, синий','Дополнительные цвета сообщений: голубой, зелёный, розовый','Ещё 2 варианта сообщения входа/выхода']],
+    ['Старт-кит · 1 раз за вайп',['Железные меч, топор и лопата; алмазная кирка','Полный железный сет и щит · 32 еды · 64 факела · 32 брёвен','16 железа · ведро воды · кровать']]]},
+  eclipse:{mark:'☾',inherit:'Всё из PRIME, плюс эксклюзивные возможности',groups:[
+    ['Экономика и места',['Продажа серверу ×5','Ежедневная выплата: 200–300 ₿','15 домов · 100 приватов','4 бизнеса · 4 банка','25 лотов на аукцион']],
+    ['Удобство и перемещение',['Почта: 160 писем / 70 посылок','Избранное: 140','Сохранённые варпы: 30','/fly · ванильные /tp и /teleport без TPA-запроса','Эндер-сундук на 54 слота']],
+    ['Косметика и личные варпы',['Все 17 аксессуаров · все 1489 предметов мебели','Полный каталог косметики и эксклюзивные следы: Soul, Witch, Flame, Portal','Дополнительные цвета ника/чата и стили входа/выхода','Любой HEX-цвет ника: /nickcolor hex FF55AA','Свой след из разрешённых частиц: /trail custom','Создание публичных /warp через /setwarp; можно менять и удалять только свои']],
+    ['Старт-кит · 1 раз за вайп',['Алмазные меч и кирка; железные топор и лопата','Полный железный сет и щит · 48 еды · 16 золотой моркови','64 факела · 48 брёвен · 24 железа · 3 алмаза · ведро воды · кровать']]]}
+};
+function drawDonate(v){
+  const intro=el('div',{class:'card'},el('div',{class:'daily-stamp'},'ПРИВИЛЕГИИ СЕРВЕРА'),el('h2',{style:'margin:12px 0 6px'},'Выбери свой набор'),
+    el('div',{class:'mut'},'PLUS включает Standard, PRIME включает PLUS, ECLIPSE включает PRIME. Значение ₿ — внутриигровая выплата.'),
+    me?el('div',{style:'margin-top:12px'},'Твой баланс: ',el('b',{},me.rubies+' ♦️')):el('div',{class:'mut',style:'margin-top:10px'},'Войди, чтобы видеть баланс рубинов.'));
+  v.append(intro);
+  const g=el('div',{class:'grid3'});
+  const terms=[['month','1 месяц'],['three','3 месяца'],['six','6 месяцев'],['year','1 год']];
+  for(const [key,info] of Object.entries(DONATE_DETAILS)){
+    const d=cfg.donates[key]||{};
+    const card=el('article',{class:'card plan-card '+key});
+    const priceTable=el('table',{class:'price-table'},...terms.map(([id,label])=>el('tr',{},el('td',{},label),el('td',{},`${d.prices?.[id]??'—'} ♦️`))));
+    card.append(el('div',{class:'plan-head'},el('h3',{},info.mark+' '+d.name),el('span',{class:'plan-price'},'Стоимость срока')),
+      priceTable,
+      el('div',{class:'plan-inherit'},info.inherit));
+    info.groups.forEach(([title,items])=>card.append(el('section',{class:'perk-group'},el('h4',{},title),el('ul',{},items.map(x=>el('li',{},x))))));
+    const term=el('select',{class:'donate-term'},...terms.map(([id,label])=>el('option',{value:id},label)));
+    const status=el('div',{class:'mut',style:'margin-top:8px'});
+    card.append(el('div',{class:'price-note'},'Выдача привилегии — вручную администрацией после подтверждения заявки.'),term,el('button',{class:'btn p',style:'margin-top:10px;width:100%',onclick:async()=>{if(!me){tab='acc';drawTabs();draw();return}try{await api('donate','POST',{plan:key,term:term.value});status.textContent='Заявка отправлена администрации. Рубины не списаны.'}catch(e){status.textContent=e.message}}},me?'Отправить заявку':'Войти и оформить'),status);
+    g.append(card);
+  }
+  v.append(g,el('div',{class:'card mut',style:'margin-top:16px'},'Цены указаны в рубинах по курсу 1 ⭐ = 2 ♦️. Рубины можно приобрести в Telegram-боте доната; после подтверждения администрация вручную зачисляет их на аккаунт. Оплата на сайте пока не подключена. Привилегию выдаёт администрация после проверки заявки. Старт-кит можно получить один раз за вайп.'))
+}
+
+async function drawDaily(v){
+  if(!me){v.append(el('div',{class:'card'},el('div',{class:'daily-stamp'},'КОМНАТА ХРАНИТЕЛЯ'),el('h2',{},'Сундук дня'),el('p',{class:'mut'},'Войди в аккаунт, чтобы забрать кристаллы и продолжать серию входов.'),el('button',{class:'btn p',onclick:()=>{tab='acc';drawTabs();draw()}},'Войти / создать аккаунт')));return}
+  const card=el('section',{class:'card daily-card'},el('div',{},el('div',{class:'daily-stamp'},'ПОДАРОК ЗА ВХОД'),el('h2',{},'Сундук дня'),el('div',{class:'daily-count'},'Заходи каждый день: серия увеличивает награду. На 7-й день — отдельный бонус. Крипер к сундуку не допущен.')),
+    el('div',{class:'daily-reward'},'Загрузка…'));
+  const reward=card.children[1],actions=el('div',{class:'daily-action'}),status=el('div',{class:'mut',style:'margin-top:8px'});
+  card.append(actions,status);v.append(card);
+  try{
+    const d=await api('daily');
+    const streak=d.streak||0,next=streak+1,base=d.reward.base+Math.min(next-1,d.reward.streakCap)*d.reward.streakStep,bonus=next%7===0?d.reward.weekBonus:0;
+    reward.textContent=d.claimed?`Сегодня получено · серия ${d.streak} дн.`:`${base+bonus} 💎`;
+    const claim=el('button',{class:'btn p',onclick:async e=>{const button=e.currentTarget;button.disabled=true;try{const r=await api('daily','POST',{});await refreshMe();button.textContent='Забрано · приходи завтра';reward.textContent=`+${r.crystals} 💎 · серия ${r.streak} дн.`;status.textContent=`Сундук открыт. Крипер ничего не взорвал.${r.weekBonus?` Недельный бонус: +${r.weekBonus} 💎.`:''}`}catch(err){status.textContent=err.message;button.disabled=false}}},d.claimed?'Уже забрано сегодня':'Открыть сундук');claim.disabled=d.claimed;actions.append(claim);
+    status.textContent=d.claimed?'Новый сундук появится завтра.':`Серия входов: ${streak} дн. Сегодня будет ${base} 💎${bonus?` + ${bonus} 💎 за седьмой день`:''}.`;
+  }catch(e){reward.textContent='';status.textContent=e.message;actions.append(el('button',{class:'btn',onclick:()=>{tab='acc';drawTabs();draw()}},'Открыть профиль'))}
+}
+
+function drawShop(v){
+  v.append(el('div',{class:'card'},el('h2',{style:'margin-top:0'},'💎 Магазин за кристаллы'),
+    el('div',{class:'mut'},`Как копить: ${cfg.reward.first||0} 💎 за регистрацию, ${cfg.reward.vote||0} 💎 за голосование и ежедневный сундук — от ${cfg.daily?.base||20} 💎. Серия добавляет к награде, на каждом 7-м дне есть бонус.`),
+    el('button',{class:'btn sm',style:'margin-top:10px',onclick:()=>{tab='daily';drawTabs();draw()}},'Забрать сундук дня →'),
+    me?el('div',{style:'margin-top:10px'},'Баланс: ',el('b',{},me.crystals+' 💎'),'  •  твой ник: ',nameEl(me)):el('div',{class:'mut',style:'margin-top:10px'},'Войди в аккаунт, чтобы покупать.')));
+  if(!me)return;
+  const own=(k,val)=>me.items.some(i=>i.kind===k&&i.value===val);
+  const act=async(path,body)=>{try{await api(path,'POST',body);await refreshMe();draw()}catch(e){alert(e.message)}};
+  const c1=el('div',{class:'card'},el('h3',{style:'margin-top:0'},`Цвет ника — ${cfg.price.color} 💎 за цвет`));
+  cfg.colors.forEach(col=>{const o=own('color',col);const b=el('span',{class:'sw'+(o?' own':'')+(me.color===col?' on':''),title:o?'Выбрать':'Купить',style:'background:'+col,onclick:()=>o?act('shop/equip',{kind:'color',value:col}):confirm(`Купить цвет за ${cfg.price.color} 💎?`)&&act('shop/buy',{kind:'color',value:col})});c1.append(b)});
+  c1.append(el('div',{},el('button',{class:'btn sm',onclick:()=>act('shop/equip',{kind:'color',value:''})},'Сбросить цвет')),el('div',{class:'mut',style:'margin-top:6px'},'Белая рамка — куплено, нажми чтобы выбрать.'));
+  const c2=el('div',{class:'card'},el('h3',{style:'margin-top:0'},`Значок рядом с ником — ${cfg.price.badge} 💎 за значок`));
+  cfg.badges.forEach(bd=>{const o=own('badge',bd);c2.append(el('span',{class:'bg'+(o?' own':'')+(me.badge===bd?' on':''),onclick:()=>o?act('shop/equip',{kind:'badge',value:bd}):confirm(`Купить значок ${bd} за ${cfg.price.badge} 💎?`)&&act('shop/buy',{kind:'badge',value:bd})},bd))});
+  c2.append(el('div',{},el('button',{class:'btn sm',onclick:()=>act('shop/equip',{kind:'badge',value:''})},'Убрать значок')));
+  const hasAv=own('avatar','unlock');
+  const c3=el('div',{class:'card'},el('h3',{style:'margin-top:0'},`Аватар — ${cfg.price.avatar} 💎 (один раз)`),
+    hasAv?el('div',{class:'mut'},'Куплено. Загрузить или сменить картинку можно в профиле.'):el('button',{class:'btn p',onclick:()=>confirm(`Купить возможность ставить аватар за ${cfg.price.avatar} 💎?`)&&act('shop/buy',{kind:'avatar'})},'Купить'));
+  v.append(c1,c2,c3)}
+
+// сжатие картинки на клиенте
+function shrink(file,max,q=.82){return new Promise((res,rej)=>{
+  if(!/^image\/(jpeg|png|webp)$/.test(file.type))return rej(new Error('Нужна картинка JPEG, PNG или WebP'));
+  const im=new Image(),u=URL.createObjectURL(file);
+  im.onload=()=>{URL.revokeObjectURL(u);let w=im.width,h=im.height,k=Math.min(1,max/Math.max(w,h));w=Math.round(w*k);h=Math.round(h*k);
+    for(let i=0;i<6;i++){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);
+      const d=c.toDataURL('image/jpeg',q);if(d.length<390000)return res(d);w=Math.round(w*.75);h=Math.round(h*.75);q-=.08}
+    rej(new Error('Не удалось сжать картинку'))};
+  im.onerror=()=>rej(new Error('Не удалось открыть картинку'));im.src=u})}
+
+async function drawStickers(v){
+  if(!me)return;
+  v.replaceChildren();
+  const top=el('div',{class:'card'},el('div',{class:'daily-stamp'},'ТВОЯ КОЛЛЕКЦИЯ'),el('h2',{style:'margin:10px 0 4px'},'Стикерпаки'),el('div',{class:'mut'},'Создавай бесплатные паки и отправляй стикеры в личных сообщениях. До 5 паков, 24 картинки в каждом и 100 на аккаунт. Формат JPEG, PNG или WebP; размер автоматически уменьшается.'));
+  const name=el('input',{placeholder:'Название нового пака',maxlength:'32'}),note=el('div',{class:'msg'});
+  top.append(el('div',{class:'row',style:'margin-top:12px;align-items:center'},name,el('button',{class:'btn p',style:'flex:none',onclick:async()=>{try{await api('stickers/pack','POST',{name:name.value});name.value='';await drawStickers(v)}catch(e){note.className='msg e';note.textContent=e.message}}},'Создать бесплатный пак')),note);
+  v.append(top);
+  let data;try{data=await api('stickers')}catch(e){top.append(el('div',{class:'msg e'},e.message));return}
+  const current=String(me.badge||'').startsWith('sticker:')?String(me.badge).slice(8):'';
+  const profile=el('div',{class:'card'},el('div',{class:'daily-stamp'},'ОФОРМЛЕНИЕ ПРОФИЛЯ'),el('h3',{},'Стикер рядом с ником'),el('div',{class:'mut'},'Выбери свой стикер — он будет виден рядом с ником в профиле и личных сообщениях.'),el('div',{class:'sticker-picker',style:'flex-wrap:wrap'}));
+  const profilePicker=profile.querySelector('.sticker-picker');
+  data.packs.forEach(pack=>pack.stickers.forEach(st=>profilePicker.append(el('button',{class:'sticker-tile'+(String(st.image_id)===current?' on':''),type:'button',title:st.label,onclick:async()=>{try{await api('profile/sticker','POST',{image:st.image_id});await refreshMe();draw()}catch(e){alert(e.message)}}},el('img',{src:imgUrl(st.image_id),alt:st.label,loading:'lazy'}),el('span',{class:'mut'},st.label)))));
+  if(!profilePicker.children.length)profilePicker.append(el('span',{class:'mut'},'Сначала создай стикерпак и загрузи в него стикер.'));
+  profile.append(el('button',{class:'btn sm',style:'margin-top:10px',onclick:async()=>{try{await api('shop/equip','POST',{kind:'badge',value:''});await refreshMe();draw()}catch(e){alert(e.message)}}},'Убрать значок/стикер'));v.append(profile);
+  if(!data.packs.length){v.append(el('div',{class:'card mut'},'Паков пока нет. Придумай название и создай первый.'));return}
+  for(const pack of data.packs){
+    const c=el('section',{class:'card'},el('div',{style:'display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap'},el('div',{},el('h3',{style:'margin:0'},'🧩 '+pack.name),el('div',{class:'mut'},`${pack.stickers.length}/24 стикеров`)),el('button',{class:'btn sm d',onclick:async()=>{if(confirm(`Удалить пак «${pack.name}»?`)){await api('stickers/delete','POST',{pack:pack.id});drawStickers(v)}}},'Удалить пак')));
+    const file=el('input',{type:'file',accept:'image/jpeg,image/png,image/webp',class:'hide'}),label=el('input',{placeholder:'Подпись (необязательно)',maxlength:'32'}),status=el('span',{class:'mut'});
+    const add=el('button',{class:'btn sm',onclick:()=>file.click()},'＋ Добавить стикер');
+    file.onchange=async()=>{if(!file.files[0])return;status.textContent='Загрузка…';try{const dataUrl=await shrink(file.files[0],512,.86),uploaded=await api('upload','POST',{kind:'sticker',data:dataUrl});await api('stickers/add','POST',{pack:pack.id,image:uploaded.id,label:label.value});await drawStickers(v)}catch(e){status.textContent=e.message}file.value=''};
+    c.append(el('div',{class:'row',style:'margin-top:12px;align-items:center'},label,add,status),file);
+    const grid=el('div',{class:'sticker-grid'});
+    pack.stickers.forEach(s=>grid.append(el('div',{class:'sticker-tile'},el('img',{src:imgUrl(s.image_id),alt:s.label,loading:'lazy'}),el('div',{class:'mut'},s.label))));
+    if(pack.stickers.length)c.append(grid);else c.append(el('div',{class:'mut',style:'margin-top:12px'},'Добавь первую картинку в пак.'));
+    v.append(c);
+  }
+}
+
+function drawDm(v){
+  let cur=null,lastCount=-1;
+  const list=el('div',{class:'card',style:'margin:0'}),pane=el('div',{class:'card',style:'margin:0'});
+  const chat=el('div',{class:'chat'},list,pane);v.append(chat);
+  const nu=el('input',{placeholder:'Ник на сайте'});
+  async function loadList(){
+    let d;try{d=await api('dm/list')}catch{return}
+    list.replaceChildren(el('h3',{style:'margin-top:0'},'Диалоги'),el('div',{class:'row',style:'flex-wrap:nowrap'},nu,el('button',{class:'btn sm p',style:'flex:none;min-width:0',onclick:()=>nu.value.trim()&&open(nu.value.trim())},'→')));
+    if(!d.chats.length)list.append(el('div',{class:'mut',style:'margin-top:10px'},'Пока пусто. Введи ник игрока и напиши ему.'));
+    d.chats.forEach(c=>list.append(el('div',{class:'cl'+(cur&&cur.toLowerCase()===c.username.toLowerCase()?' on':''),onclick:()=>open(c.username)},nameEl({...c},30),c.unread?el('span',{class:'un'},c.unread):'')))}
+  async function open(name){cur=name;chat.classList.add('mobile-open');lastCount=-1;await loadThread(true);loadList()}
+  async function loadThread(force){
+    if(!cur)return;let d;try{d=await api('dm?with='+encodeURIComponent(cur))}catch(e){pane.replaceChildren(el('div',{class:'msg e'},e.message));cur=null;return}
+    if(!force&&d.messages.length===lastCount)return;lastCount=d.messages.length;
+    const th=el('div',{class:'th'});
+    d.messages.forEach(m=>{const b=el('div',{class:'mg'+(m.mine?' me':'')});if(m.body)b.append(m.body);if(m.image)b.append(el('img',{src:imgUrl(m.image),alt:'фото',loading:'lazy'}));b.append(el('small',{},new Date(m.created).toLocaleString('ru-RU')));th.append(b)});
+    const ta=el('textarea',{style:'min-height:56px',placeholder:'Сообщение…',maxlength:'1000'}),file=el('input',{type:'file',accept:'image/jpeg,image/png,image/webp',class:'hide'}),pend=el('span',{class:'mut'});let imgId=null;
+    const send=async()=>{try{await api('dm','POST',{to:d.with.username,body:ta.value,image:imgId});ta.value='';imgId=null;pend.textContent='';await loadThread(true);loadList()}catch(e){alert(e.message)}};
+    file.onchange=async()=>{if(!file.files[0])return;pend.textContent='Загрузка…';try{const data=await shrink(file.files[0],1024);imgId=(await api('upload','POST',{kind:'dm',data})).id;pend.textContent='📎 Фото прикреплено'}catch(e){pend.textContent='';alert(e.message)}file.value=''};
+    const picker=el('div',{class:'sticker-picker',style:'display:none'});
+    const stickerBtn=el('button',{class:'btn sm',style:'flex:none',onclick:async()=>{if(picker.style.display!=='none'){picker.style.display='none';return}try{const packs=await api('stickers');picker.replaceChildren();packs.packs.forEach(p=>p.stickers.forEach(s=>picker.append(el('img',{src:imgUrl(s.image_id),alt:s.label,title:p.name+' · '+s.label,onclick:()=>{imgId=s.image_id;pend.textContent='🧩 Стикер выбран';picker.style.display='none'}}))));picker.style.display=picker.children.length?'flex':'block';if(!picker.children.length)picker.append(el('span',{class:'mut'},'Создай пак в разделе «Стикеры».'))}catch(e){alert(e.message)}}},'🧩 Стикеры');
+    pane.replaceChildren(el('div',{style:'display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px'},el('button',{class:'btn sm mobile-back',style:'display:none',onclick:()=>chat.classList.remove('mobile-open')},'←'),nameEl(d.with,34),
+      el('button',{class:'btn sm d',onclick:async()=>{await api('block','POST',{user:d.with.username,on:!d.blocked});loadThread(true)}},d.blocked?'Разблокировать':'Заблокировать')),th,
+      el('div',{style:'margin-top:10px'},ta),picker,el('div',{class:'row',style:'margin-top:8px;align-items:center'},el('button',{class:'btn sm',style:'flex:none',onclick:()=>file.click()},'📎 Фото'),stickerBtn,pend,el('button',{class:'btn p',style:'flex:none',onclick:send},'Отправить')),file);
+    th.scrollTop=th.scrollHeight;
+    if(d.blocked)pane.append(el('div',{class:'mut',style:'margin-top:8px'},'Ты заблокировал этого игрока: его сообщения тебе не придут.'))}
+  pane.append(el('div',{class:'mut'},'Выбери диалог слева или напиши новому игроку.'));
+  loadList();
+  const iv=setInterval(()=>{if(tab!=='dm'||!document.body.contains(pane)){clearInterval(iv);return}loadThread(false);loadList()},6000)}
+
+function drawAcc(v){
+  if(me){
+    const c=el('div',{class:'card'},el('div',{style:'display:flex;align-items:center;gap:14px;flex-wrap:wrap'},avatarEl(me.avatar,72,me.username),el('div',{},el('h2',{style:'margin:0'},nameEl(me)),
+      el('div',{class:'mut'},me.mc?'Ник в Minecraft: '+me.mc:'Аккаунт администрации'))),
+      el('div',{class:'bal'},el('div',{},el('span',{class:'mut'},'💎 Кристаллы'),el('b',{},String(me.crystals))),el('div',{},el('span',{class:'mut'},'♦️ Рубины'),el('b',{},String(me.rubies)))));
+    if(me.items.some(i=>i.kind==='avatar')){
+      const f=el('input',{type:'file',accept:'image/jpeg,image/png,image/webp',class:'hide'}),m=el('span',{class:'mut'});
+      f.onchange=async()=>{if(!f.files[0])return;m.textContent='Загрузка…';try{const data=await shrink(f.files[0],256);await api('upload','POST',{kind:'avatar',data});await refreshMe();draw()}catch(e){m.textContent='';alert(e.message)}};
+      c.append(el('button',{class:'btn sm',onclick:()=>f.click()},'📷 Загрузить аватар'),' ',m,f)}
+    c.append(el('h3',{},'Привилегии'));
+    if(!me.privileges.length)c.append(el('div',{class:'mut'},'Нет активных привилегий.'));
+    me.privileges.forEach(p=>c.append(el('span',{class:'pv'},p.name+' — до '+fmt(p.expires))));
+    v.append(c);return}
+  const msg=el('div',{class:'msg'});
+  const f=(id,l,t='text',ph='')=>[el('label',{for:id},l),el('input',{id,type:t,placeholder:ph,autocomplete:t==='password'?'new-password':'off'})];
+  const login=el('div',{class:'card'},el('h2',{style:'margin-top:0'},'Вход'),...f('lu','Ник на сайте'),...f('lp','Пароль','password'),
+    el('button',{class:'btn p',style:'margin-top:14px',onclick:()=>go('login',{username:$('#lu').value,password:$('#lp').value})},'Войти'));
+  const reg=el('div',{class:'card'},el('h2',{style:'margin-top:0'},'Регистрация'),el('div',{class:'mut'},`Бонус за регистрацию: ${cfg.reward.first||0} 💎`),
+    ...f('ru','Ник на сайте (любой)'),...f('rm','Ник в Minecraft (как в анкете и на сервере)'),...f('rp','Пароль','password'),...f('rp2','Повтор пароля','password'),
+    el('button',{class:'btn p',style:'margin-top:14px',onclick:()=>go('register',{username:$('#ru').value,mc:$('#rm').value,password:$('#rp').value,password2:$('#rp2').value})},'Создать аккаунт'));
+  async function go(p,b){msg.className='msg';msg.textContent='…';try{await api(p,'POST',b);await init()}catch(e){msg.className='msg e';msg.textContent=e.message}}
+  v.append(login,reg,msg)}
+
+async function drawAdmin(v){
+  const post=el('div',{class:'card'},el('h3',{style:'margin-top:0'},'Новая новость / опрос'),
+    el('label',{},'Текст (для опроса — вопрос)'),el('textarea',{id:'nb'}),
+    el('label',{},'Варианты ответа для опроса — по одному в строке (пусто = просто новость)'),el('textarea',{id:'no',style:'min-height:70px'}),
+    el('button',{class:'btn p',style:'margin-top:12px',onclick:async()=>{
+      try{await api('news','POST',{body:$('#nb').value,options:$('#no').value.split('\n')});$('#nb').value='';$('#no').value='';m1.className='msg o';m1.textContent='Опубликовано'}catch(e){m1.className='msg e';m1.textContent=e.message}}},'Опубликовать'));
+  const m1=el('div',{class:'msg'});post.append(m1);
+  const gr=el('div',{class:'card'},el('h3',{style:'margin-top:0'},'Валюта и привилегии'),
+    el('label',{},'Ник игрока на сайте'),el('input',{id:'gu',placeholder:'ник из уведомления'}),
+    el('div',{class:'row'},
+      el('div',{},el('label',{},'Валюта'),el('select',{id:'gc'},el('option',{value:'crystals'},'💎 Кристаллы'),el('option',{value:'rubies'},'♦️ Рубины'))),
+      el('div',{},el('label',{},'Сумма (минус — списать)'),el('input',{id:'ga',type:'number'})),
+      el('div',{},el('label',{},' '),el('button',{class:'btn p',style:'width:100%',onclick:()=>act('admin/grant',{user:$('#gu').value,currency:$('#gc').value,amount:$('#ga').value})},'Выдать'))),
+    el('div',{class:'row'},
+      el('div',{},el('label',{},'Привилегия'),el('input',{id:'pn',placeholder:'например, VIP'})),
+      el('div',{},el('label',{},'Срок'),el('select',{id:'pd'},el('option',{value:'month'},'1 месяц'),el('option',{value:'wipe'},'1 вайп (до 14.12.2026)'),el('option',{value:'half'},'Полгода'),el('option',{value:'year'},'Год'))),
+      el('div',{},el('label',{},' '),el('button',{class:'btn p',style:'width:100%',onclick:()=>act('admin/priv',{user:$('#gu').value,name:$('#pn').value,duration:$('#pd').value})},'Выдать'))));
+  const m2=el('div',{class:'msg'});gr.append(m2);
+  async function act(p,b){try{await api(p,'POST',b);m2.className='msg o';m2.textContent='Готово';loadUsers()}catch(e){m2.className='msg e';m2.textContent=e.message}}
+  const ul=el('div',{class:'card'},el('h3',{style:'margin-top:0'},'Игроки'),el('div',{id:'ut'}));
+  const galleryTitle=el('input',{maxlength:'80',placeholder:'Подпись к снимку'}),galleryAlt=el('input',{maxlength:'180',placeholder:'Краткое описание изображения для экранных дикторов'}),galleryFile=el('input',{type:'file',accept:'image/jpeg,image/png,image/webp',class:'hide'}),galleryMsg=el('div',{class:'msg'}),galleryList=el('div',{class:'admin-gallery-list'});
+  async function loadGalleryAdmin(){
+    try{const d=await api('admin/gallery');galleryList.replaceChildren();if(!d.items.length)galleryList.append(el('div',{class:'mut'},'В галерее пока нет добавленных администрацией снимков.'));
+      d.items.forEach(item=>galleryList.append(el('div',{class:'admin-gallery-row'},el('img',{src:imgUrl(item.image_id),alt:item.alt,loading:'lazy'}),el('div',{},el('b',{},item.title),el('div',{class:'mut'},new Date(item.created).toLocaleDateString('ru-RU')),el('div',{class:'mut'},item.alt)),el('button',{class:'btn sm d',onclick:async()=>{if(!confirm('Убрать этот снимок из галереи?'))return;try{await api('admin/gallery/delete','POST',{id:item.id});await loadGalleryAdmin()}catch(e){galleryMsg.className='msg e';galleryMsg.textContent=e.message}}},'Удалить'))))
+    }catch(e){galleryList.replaceChildren(el('div',{class:'msg e'},e.message))}}
+  const galleryAdmin=el('div',{class:'card'},el('h3',{style:'margin-top:0'},'Снимки галереи'),el('div',{class:'mut'},'Добавлять и удалять снимки может только аккаунт администрации. Файлы автоматически сжимаются перед загрузкой; до 60 снимков.'),
+    el('label',{},'Подпись'),galleryTitle,el('label',{},'Описание для доступности'),galleryAlt,
+    el('div',{class:'row',style:'margin-top:12px;align-items:center'},el('button',{class:'btn sm',onclick:()=>galleryFile.click()},'📷 Выбрать снимок'),el('button',{class:'btn sm p',onclick:async()=>{const f=galleryFile.files&&galleryFile.files[0];if(!f){galleryMsg.className='msg e';galleryMsg.textContent='Сначала выбери изображение';return}galleryMsg.className='msg';galleryMsg.textContent='Сжимаю и загружаю…';try{const data=await shrink(f,1440,.8);await api('admin/gallery/add','POST',{title:galleryTitle.value,alt:galleryAlt.value,data});galleryTitle.value='';galleryAlt.value='';galleryFile.value='';galleryMsg.className='msg o';galleryMsg.textContent='Снимок опубликован';await loadGalleryAdmin()}catch(e){galleryMsg.className='msg e';galleryMsg.textContent=e.message}}},'Опубликовать')),
+    galleryFile,galleryMsg,galleryList);
+  loadGalleryAdmin();
+  const nt=el('div',{class:'card'},el('h3',{style:'margin-top:0'},'🔔 Уведомления о покупках'),el('div',{id:'nl'}));
+  v.append(nt,post,gr,galleryAdmin,ul);
+  async function loadNotes(){
+    const d=await api('admin/notes'),box=$('#nl');box.replaceChildren();
+    if(!d.notes.length)box.append(el('div',{class:'mut'},'Новых уведомлений нет.'));
+    d.notes.forEach(n=>box.append(el('div',{style:'display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)'},
+      el('div',{},el('b',{},n.username),` (MC: ${n.mc||'—'}) купил(а) `,el('b',{},n.detail),el('div',{class:'mut'},new Date(n.created).toLocaleString('ru-RU'))),
+      el('button',{class:'btn sm d',onclick:async()=>{await api('admin/note-del','POST',{id:n.id});loadNotes()}},'Удалить'))))}
+  loadNotes();
+  async function loadUsers(){
+    const d=await api('admin/users'),t=el('table',{},el('tr',{},el('th',{},'Сайт'),el('th',{},'Minecraft'),el('th',{},'💎'),el('th',{},'♦️'),el('th',{},'Привилегии')));
+    d.users.filter(u=>!u.is_admin).forEach(u=>{
+      const td=el('td',{});
+      u.privileges.forEach(p=>td.append(el('span',{class:'pv'},p.name+' до '+fmt(p.expires),el('a',{href:'#',style:'color:var(--err)',onclick:async e=>{e.preventDefault();await api('admin/revoke','POST',{id:p.id});loadUsers()}},'✕'))));
+      t.append(el('tr',{},el('td',{},u.username),el('td',{},u.mc||''),el('td',{},String(u.crystals)),el('td',{},String(u.rubies)),td))});
+    $('#ut').replaceChildren(t)}
+  loadUsers()}
+init();
+</script></body></html>

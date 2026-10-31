@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07070a">
+  <meta name="description" content="Кинематографичная экскурсия по AngelBite.">
+  <title>Трейлер AngelBite</title>
+  <link rel="stylesheet" href="assets/angelbite-trailer.css">
+</head>
+<body>
+  <main class="trailer" id="trailer" data-state="ready">
+    <div class="space" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <iframe id="site-frame" title="AngelBite — страницы сайта" tabindex="-1" aria-hidden="true"></iframe>
+    <div class="frame-shade" aria-hidden="true"></div>
+    <div class="scene-flash" id="scene-flash" aria-hidden="true"><span id="flash-name"></span></div>
+
+    <div class="hud" id="hud" aria-hidden="true">
+      <div class="hud-brand"><span class="hud-mark">A</span><span>ANGELBITE <small>САЙТ • МИР • СООБЩЕСТВО</small></span></div>
+      <div class="chapter"><span class="chapter-count" id="chapter-count">00 / 10</span><span class="chapter-name" id="chapter-name">ПРЕМЬЕРА</span></div>
+      <div class="progress"><i id="progress-fill"></i></div>
+    </div>
+
+    <section class="opening" id="opening" aria-labelledby="opening-title">
+      <div class="opening-orbit" aria-hidden="true"><i></i><b></b><em></em></div>
+      <p class="opening-kicker"><span></span> ПРИГЛАШАЕМ НА ЭКСКУРСИЮ</p>
+      <h1 id="opening-title" class="opening-title" aria-label="Трейлер">ТРЕЙЛЕР</h1>
+      <div class="opening-rule"><i></i><span>ANGELBITE</span><i></i></div>
+      <p class="opening-copy">Мир, который создаётся вместе.</p>
+      <button class="start-button" id="start-button" type="button"><span class="play-icon" aria-hidden="true">▶</span> Начать просмотр</button>
+      <p class="opening-hint">Реплики помощника появятся на экране · звуковые эффекты можно отключить</p>
+    </section>
+
+    <div class="assistant" id="assistant" aria-live="polite" aria-atomic="false" hidden>
+      <div class="avatar-wrap" aria-hidden="true">
+        <span class="avatar-orbit orbit-one"></span><span class="avatar-orbit orbit-two"></span>
+        <div class="avatar"><svg viewBox="0 0 64 64" focusable="false"><path class="avatar-star" d="M32 7 37 25 55 32 37 37 32 57 26 38 8 32 26 26Z"/><circle cx="32" cy="32" r="4"/></svg></div>
+        <span class="avatar-status"></span>
+      </div>
+      <div class="speech-card">
+        <div class="speech-top"><span class="speech-name">ПОМОЩНИК ANGELBITE</span><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+        <p id="speech-text"></p>
+      </div>
+    </div>
+
+    <aside class="account-preview" id="account-preview" aria-hidden="true">
+      <div class="preview-head"><span class="preview-icon">✦</span><div><small>ПРОСТРАНСТВО ИГРОКА</small><b>Аккаунт AngelBite</b></div><span class="preview-live">ПРЕВЬЮ</span></div>
+      <div class="preview-grid">
+        <div><span>◉</span><b>Профиль</b><small>Имя и оформление</small></div>
+        <div><span>◇</span><b>Сундук дня</b><small>Награда участнику</small></div>
+        <div><span>✳</span><b>Стикеры</b><small>Детали ника</small></div>
+      </div>
+      <div class="ruby-note"><b>★ 1 звезда = 2 рубина</b><span>Пока рубины начисляет администрация. Позже их можно будет приобрести в Telegram-боте доната.</span></div>
+    </aside>
+
+    <div class="controls" id="controls" hidden>
+      <button id="pause-button" type="button" aria-label="Пауза">Ⅱ <span>Пауза</span></button>
+      <button id="sound-button" type="button" aria-pressed="true" aria-label="Отключить звуковые эффекты">♫ <span>Эффекты включены</span></button>
+      <button id="skip-button" type="button" aria-label="Перейти к финалу">Пропустить <b>↗</b></button>
+    </div>
+
+    <section class="ending" id="ending" aria-label="Завершение трейлера" hidden>
+      <div class="ending-sigil" aria-hidden="true">✦</div>
+      <div class="ending-lines" id="ending-lines">
+        <p class="ending-brand" data-copy="AngelBite"></p>
+        <p data-copy="Сайт и сервер в тестировании и настройке"></p>
+        <p data-copy="В скором времени будет доступно"></p>
+        <p class="ending-thanks" data-copy="Благодарю за внимание"></p>
+      </div>
+    </section>
+
+    <div class="blackout" id="blackout" aria-hidden="true"></div>
+    <div class="sr-status" id="sr-status" role="status" aria-live="polite"></div>
+  </main>
+  <script src="assets/angelbite-trailer.js" defer></script>
+</body>
+</html>
